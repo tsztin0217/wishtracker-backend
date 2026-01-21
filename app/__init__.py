@@ -4,6 +4,7 @@ from .auth import oauth
 import os
 from dotenv import load_dotenv
 from .models import user, item, tag, item_tag
+from .routes.home_routes import bp as home_bp
 
 
 load_dotenv()
@@ -21,5 +22,7 @@ def create_app(config=None):
     db.init_app(app)
     migrate.init_app(app, db)
     oauth.init_app(app)
+
+    app.register_blueprint(home_bp)
 
     return app
