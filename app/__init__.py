@@ -2,7 +2,11 @@ from flask import Flask
 from .db import db, migrate
 from .auth import oauth
 import os
+from dotenv import load_dotenv
 from .models import user, item, tag, item_tag
+
+
+load_dotenv()
 
 
 def create_app(config=None):
