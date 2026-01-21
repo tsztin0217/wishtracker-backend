@@ -3,7 +3,6 @@ from sqlalchemy import ForeignKey
 from typing import Optional
 from ..db import db
 from datetime import datetime, timezone
-from .item_tag import item_tag
 
 class Item(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -17,4 +16,4 @@ class Item(db.Model):
     user_id: Mapped[int] = mapped_column(ForeignKey('user.id'))
     
     user: Mapped['User'] = relationship(back_populates='items')
-    tags: Mapped[list['Tag']] = relationship(secondary=item_tag, back_populates='items')
+    tags: Mapped[list['Tag']] = relationship(secondary='item_tag', back_populates='items')
