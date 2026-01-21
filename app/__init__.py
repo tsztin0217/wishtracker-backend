@@ -1,6 +1,8 @@
 from flask import Flask
 from .db import db, migrate
+from .auth import oauth
 import os
+from .models import user, item, tag, item_tag
 
 
 def create_app(config=None):
@@ -13,7 +15,7 @@ def create_app(config=None):
         app.config.update(config)
 
     db.init_app(app)
-
     migrate.init_app(app, db)
+    oauth.init_app(app)
 
     return app

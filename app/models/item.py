@@ -3,7 +3,7 @@ from sqlalchemy import ForeignKey
 from typing import Optional
 from ..db import db
 from datetime import datetime, timezone
-from .item_tag import item_tags
+from .item_tag import item_tag
 
 class Item(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -13,7 +13,8 @@ class Item(db.Model):
     img_url: Mapped[str]
     website_url: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    last_updated: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
+    user_id: Mapped[int] = mapped_column(ForeignKey('user.id'))
     
     user: Mapped['User'] = relationship(back_populates='items')
-    tags: Mapped[list['Tag']] = relationship(secondary=item_tags, back_populates='items')
+    tags: Mapped[list['Tag']] = relationship(secondary=item_tag, back_populates='items')
