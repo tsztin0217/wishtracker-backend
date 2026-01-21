@@ -1,0 +1,19 @@
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import ForeignKey
+from typing import Optional
+from ..db import db
+from datetime import datetime, timezone
+from .item_tag import item_tags
+
+class Item(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    name: Mapped[str]
+    description: Mapped[Optional[str]]
+    price: Mapped[float]
+    img_url: Mapped[str]
+    website_url: Mapped[str]
+    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    
+    user: Mapped['User'] = relationship(back_populates='items')
+    tags: Mapped[list['Tag']] = relationship(secondary=item_tags, back_populates='items')
