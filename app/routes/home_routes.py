@@ -5,7 +5,7 @@ bp = Blueprint('home_bp', __name__, url_prefix='')
 
 @bp.get('/')
 def get_homepage():
-    user = session.get('user')
+    return '<h1>Hello World!</h1>'
 
 @bp.get('/login')
 def login():
@@ -14,8 +14,9 @@ def login():
 
 @bp.get('/authorize_google')
 def authorize_google():
-    try:
-        token = oauth.google.authorize_access_token()
-        user_info = token.get('userinfo')
+    # try:
+    #     token = oauth.google.authorize_access_token()
+    #     user_info = token.get('userinfo')
 
-        user = User.get_or_create
+    #     user = User.get_or_create
+    pass
