@@ -29,3 +29,13 @@ class User(db.Model):
 
         db.session.commit()
         return user
+    
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'email': self.email,
+            'name': self.name,
+            'oauth_provider': self.oauth_provider,
+            'oauth_id': self.oauth_id
+        }

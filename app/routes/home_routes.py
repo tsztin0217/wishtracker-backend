@@ -1,5 +1,8 @@
-from flask import Blueprint, session, url_for
+from flask import Blueprint, session, url_for, redirect, jsonify
 from ..auth import oauth
+from ..models.user import User
+from ..db import db
+import os
 
 bp = Blueprint('home_bp', __name__, url_prefix='')
 
@@ -9,14 +12,53 @@ def get_homepage():
 
 @bp.get('/login')
 def login():
-    redirect_uri = url_for('authorize_google', _external=True)
+    redirect_uri = url_for('home_bp.authorize_google', _external=True)
     return oauth.google.authorize_redirect(redirect_uri)
 
 @bp.get('/authorize_google')
 def authorize_google():
-    # try:
-    #     token = oauth.google.authorize_access_token()
-    #     user_info = token.get('userinfo')
+    try:
+        token = oauth.google.authorize_access_token()
+        user_info = token.get('userinfo')
 
-    #     user = User.get_or_create
-    pass
+        user = User.get_or_create(
+            oauth_provider='google',
+            oauth_id=user_info['sub'],
+            email=user_info['email'],
+            name=user_info.get('name')
+        )
+
+        session['user_id'] = user.id
+        
+        # Redirect back to frontend
+        frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:5173')
+        return redirect(frontend_url)
+    
+    except Exception as e:
+        print(f"OAuth error: {e}")
+        frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:5173')
+        return redirect(f'{frontend_url}?error=auth_failed')
+
+@bp.get('/user')
+def get_current_user():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'user': None}), 200
+    
+    user = db.session.get(User, user_id)
+    if not user:
+        return jsonify({'user': None}), 200
+    
+    return jsonify({
+        'user': {
+            'id': user.id,
+            'email': user.email,
+            'name': user.name,
+            'oauth_provider': user.oauth_provider
+        }
+    }), 200
+
+@bp.post('/logout')
+def logout():
+    session.clear()
+    return jsonify({'message': 'Logged out'}), 200

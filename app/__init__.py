@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from .db import db, migrate
 from .auth import oauth
 import os
@@ -13,8 +14,13 @@ load_dotenv()
 def create_app(config=None):
     app = Flask(__name__)
 
+    # Get allowed origins from environment
+    allowed_origins = os.getenv('CORS_ORIGINS', 'http://localhost:5173').split(',')
+    CORS(app, origins=allowed_origins, supports_credentials=True)
+
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
 
     if config:
         app.config.update(config)
