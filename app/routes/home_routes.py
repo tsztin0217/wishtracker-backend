@@ -32,6 +32,8 @@ def authorize_google():
         
         # Redirect back to frontend
         frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:5173')
+        print(f"[DEBUG] FRONTEND_URL from env: {os.getenv('FRONTEND_URL')}")
+        print(f"[DEBUG] Redirecting to: {frontend_url}")
         return redirect(frontend_url)
     
     except Exception as e:
