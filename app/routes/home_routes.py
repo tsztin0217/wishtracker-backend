@@ -34,14 +34,13 @@ def authorize_google():
         session['user_id'] = user.id
         
         # Redirect back to frontend
-        frontend_url = os.getenv('FRONTEND_URL')
-        print(f"[DEBUG] FRONTEND_URL from env: {frontend_url}")
+        frontend_url = 'https://wishtracker-frontend-284687348047.us-central1.run.app'
         print(f"[DEBUG] Redirecting to: {frontend_url}")
         return redirect(frontend_url)
     
     except Exception as e:
         print(f"OAuth error: {e}")
-        frontend_url = os.getenv('FRONTEND_URL')
+        frontend_url = 'https://wishtracker-frontend-284687348047.us-central1.run.app'
         return redirect(f'{frontend_url}?error=auth_failed')
 
 @bp.get('/user')
