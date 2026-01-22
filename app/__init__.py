@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 from .models import user, item, tag, item_tag
 from .routes.home_routes import bp as home_bp
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 
 load_dotenv()
@@ -13,6 +14,9 @@ load_dotenv()
 
 def create_app(config=None):
     app = Flask(__name__)
+    
+    # Trust proxy headers from Cloud Run
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
     # Get allowed origins from environment
     allowed_origins = os.getenv('CORS_ORIGINS').split(',')
