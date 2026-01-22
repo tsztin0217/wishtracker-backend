@@ -21,6 +21,13 @@ def create_app(config=None):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
+    
+    # Session configuration for cross-origin cookies in production
+    is_production = 'run.app' in os.getenv('SQLALCHEMY_DATABASE_URI', '')
+    if is_production:
+        app.config['SESSION_COOKIE_SECURE'] = True
+        app.config['SESSION_COOKIE_HTTPONLY'] = True
+        app.config['SESSION_COOKIE_SAMESITE'] = 'None'
 
     if config:
         app.config.update(config)
