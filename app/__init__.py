@@ -28,6 +28,10 @@ def create_app(config=None):
         app.config['SESSION_COOKIE_SECURE'] = True
         app.config['SESSION_COOKIE_HTTPONLY'] = True
         app.config['SESSION_COOKIE_SAMESITE'] = 'None'
+        app.config['SESSION_COOKIE_DOMAIN'] = None  # Don't set domain for Cloud Run
+    
+    # For OAuth state parameter
+    app.config['AUTHLIB_INSECURE_TRANSPORT'] = not is_production
 
     if config:
         app.config.update(config)

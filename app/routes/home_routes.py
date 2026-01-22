@@ -13,11 +13,14 @@ def get_homepage():
 @bp.get('/login')
 def login():
     redirect_uri = url_for('home_bp.authorize_google', _external=True)
+    print(f"[DEBUG] Login redirect_uri: {redirect_uri}")
+    print(f"[DEBUG] Session before OAuth: {dict(session)}")
     return oauth.google.authorize_redirect(redirect_uri)
 
 @bp.get('/authorize_google')
 def authorize_google():
     try:
+        print(f"[DEBUG] Session in callback: {dict(session)}")
         token = oauth.google.authorize_access_token()
         user_info = token.get('userinfo')
 
