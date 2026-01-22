@@ -22,13 +22,22 @@ def create_app(config=None):
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
     
-    # Session configuration for cross-origin cookies in production
-    is_production = 'run.app' in os.getenv('SQLALCHEMY_DATABASE_URI', '')
+    # Session configuration for cross-origin cookies
+    # Detect production by checking for Cloud SQL or run.app or explicit env var
+    is_production = (
+        '/cloudsql/' in os.getenv('SQLALCHEMY_DATABASE_URI', '') or 
+        'run.app' in os.getenv('SQLALCHEMY_DATABASE_URI', '') or
+        os.getenv('FLASK_ENV') == 'production'
+    )
+    
+    print(f"[DEBUG] is_production: {is_production}")
+    print(f"[DEBUG] DB URI contains cloudsql: {'/cloudsql/' in os.getenv('SQLALCHEMY_DATABASE_URI', '')}")
+    
     if is_production:
         app.config['SESSION_COOKIE_SECURE'] = True
         app.config['SESSION_COOKIE_HTTPONLY'] = True
         app.config['SESSION_COOKIE_SAMESITE'] = 'None'
-        app.config['SESSION_COOKIE_DOMAIN'] = None  # Don't set domain for Cloud Run
+        print("[DEBUG] Production session cookie config applied")
     
     # For OAuth state parameter
     app.config['AUTHLIB_INSECURE_TRANSPORT'] = not is_production
