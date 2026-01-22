@@ -32,6 +32,8 @@ def authorize_google():
         )
 
         session['user_id'] = user.id
+        print(f"[DEBUG] Set session['user_id'] = {user.id}")
+        print(f"[DEBUG] Session after setting: {dict(session)}")
         
         # Redirect back to frontend
         frontend_url = 'https://wishtracker-frontend-284687348047.us-central1.run.app'
@@ -45,7 +47,10 @@ def authorize_google():
 
 @bp.get('/user')
 def get_current_user():
+    print(f"[DEBUG] /user endpoint called")
+    print(f"[DEBUG] Session in /user: {dict(session)}")
     user_id = session.get('user_id')
+    print(f"[DEBUG] user_id from session: {user_id}")
     if not user_id:
         return jsonify({'user': None}), 200
     
