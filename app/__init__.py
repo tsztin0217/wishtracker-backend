@@ -8,7 +8,9 @@ from .models import user, item, tag, item_tag
 from .routes.home_routes import bp as home_bp
 
 
-load_dotenv()
+# Only load .env in development
+if not os.getenv('GAE_ENV', '').startswith('standard') and 'run.app' not in os.getenv('SQLALCHEMY_DATABASE_URI', ''):
+    load_dotenv()
 
 
 def create_app(config=None):
