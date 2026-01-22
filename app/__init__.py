@@ -15,7 +15,7 @@ def create_app(config=None):
     app = Flask(__name__)
 
     # Get allowed origins from environment
-    allowed_origins = os.getenv('CORS_ORIGINS', 'http://localhost:5173').split(',')
+    allowed_origins = os.getenv('CORS_ORIGINS').split(',')
     CORS(app, origins=allowed_origins, supports_credentials=True)
 
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
