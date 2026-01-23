@@ -1,6 +1,6 @@
 from flask import Blueprint, session, url_for, redirect, jsonify
 from ..auth import oauth
-from ..models.user import User
+from ..models.users import User
 from ..db import db
 import os
 

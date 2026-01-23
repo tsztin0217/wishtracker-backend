@@ -4,7 +4,7 @@ from .db import db, migrate
 from .auth import oauth
 import os
 from dotenv import load_dotenv
-from .models import user, item, tag, item_tag
+from .models import users, item, tag, item_tag
 from .routes.home_routes import bp as home_bp
 from werkzeug.middleware.proxy_fix import ProxyFix
 from google.cloud.sql.connector import Connector, IPTypes
