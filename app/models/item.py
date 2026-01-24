@@ -16,7 +16,17 @@ class Item(db.Model):
     created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
     last_updated: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
-    # user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
     
     user: Mapped['User'] = relationship(back_populates='items')
     tags: Mapped[list['Tag']] = relationship(secondary='item_tag', back_populates='items')
+
+    @classmethod
+    def from_dict(cls, item_dict):
+        return cls(
+            name=item_dict['name'],
+            description=item_dict.get('description'),
+            price=item_dict['price'],
+            img_url=item_dict['img_url'],
+            website_url=item_dict['website_url'],
+            user_id=item_dict['user_id']
+        )
