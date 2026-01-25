@@ -3,6 +3,7 @@ from app import create_app
 from app.db import db
 from flask.signals import request_finished
 from dotenv import load_dotenv
+from app.models.item import Item
 import os
 
 load_dotenv()

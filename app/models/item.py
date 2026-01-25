@@ -30,3 +30,15 @@ class Item(db.Model):
             website_url=item_dict['website_url'],
             user_id=item_dict['user_id']
         )
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'price': self.price,
+            'img_url': self.img_url,
+            'website_url': self.website_url,
+            'user_id': self.user_id,
+            'tags': [tag.to_dict() for tag in self.tags]
+        }
