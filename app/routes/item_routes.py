@@ -11,12 +11,20 @@ bp = Blueprint('item_bp', __name__, url_prefix='/items')
 @bp.post('')
 def create_item():
     request_data = request.get_json()
+    print("Received data:", request_data)
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': 'Authentication required'}), 401
+
+    request_data['user_id'] = user_id
 
     return create_model(Item, request_data)
 
 @bp.get('')
 def get_all_items():
-    items = db.select(Item).all()
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': 'Authentication required'}), 401
+    items = Item.query.filter_by(user_id=user_id).all()
     items_dict = [item.to_dict() for item in items]
-
     return make_response({'items': items_dict}, 200)

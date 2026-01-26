@@ -39,6 +39,8 @@ class Item(db.Model):
             'price': self.price,
             'img_url': self.img_url,
             'website_url': self.website_url,
+            'created_at': self.created_at.replace(tzinfo=timezone.utc).isoformat() if self.created_at else None,
+            'last_updated': self.last_updated.replace(tzinfo=timezone.utc).isoformat() if self.last_updated else None,
             'user_id': self.user_id,
             'tags': [tag.to_dict() for tag in self.tags]
         }
