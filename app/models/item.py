@@ -12,6 +12,7 @@ class Item(db.Model):
     description: Mapped[Optional[str]]
     price: Mapped[float]
     img_url: Mapped[str]
+    gcs_path: Mapped[str]
     website_url: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
     last_updated: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
@@ -27,6 +28,7 @@ class Item(db.Model):
             description=item_dict.get('description'),
             price=item_dict['price'],
             img_url=item_dict['img_url'],
+            gcs_path=item_dict.get('gcs_path'),
             website_url=item_dict['website_url'],
             user_id=item_dict['user_id']
         )
@@ -38,6 +40,7 @@ class Item(db.Model):
             'description': self.description,
             'price': self.price,
             'img_url': self.img_url,
+            'gcs_path': self.gcs_path,
             'website_url': self.website_url,
             'created_at': self.created_at.replace(tzinfo=timezone.utc).isoformat() if self.created_at else None,
             'last_updated': self.last_updated.replace(tzinfo=timezone.utc).isoformat() if self.last_updated else None,
