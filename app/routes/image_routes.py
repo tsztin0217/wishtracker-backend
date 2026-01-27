@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request, session
+from flask_cors import cross_origin
 from google.cloud import storage
 import os
 import uuid
@@ -15,7 +16,8 @@ def get_gcs_client():
     return storage.Client()
 
 
-@bp.route('/upload-url', methods=['POST'])
+@bp.route('/upload-url', methods=['POST', 'OPTIONS'])
+@cross_origin(origins=os.getenv('CORS_ORIGINS', '*').split(','), supports_credentials=True)
 def get_upload_url():
     """Generate a signed URL for direct upload to GCS"""
     user_id = session.get('user_id')
