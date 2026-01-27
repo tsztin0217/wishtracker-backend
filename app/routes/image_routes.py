@@ -50,7 +50,7 @@ def get_upload_url():
         auth_request = google_requests.Request()
         credentials.refresh(auth_request)
 
-        sa_email = "image-upload-service@wishtracker-484919.iam.gserviceaccount.com"
+        sa_email = "284687348047-compute@developer.gserviceaccount.com"
         
 
         bucket_name = os.getenv('GCS_BUCKET_NAME')
