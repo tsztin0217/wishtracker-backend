@@ -4,6 +4,8 @@ from google.cloud import storage
 import os
 import uuid
 from datetime import timedelta
+import google.auth
+from google.auth.transport import requests as google_requests
 bp = Blueprint('images_bp', __name__, url_prefix='/api/images')
 
 def get_gcs_client():
@@ -43,15 +45,33 @@ def get_upload_url():
         bucket_name = os.getenv('GCS_BUCKET_NAME')
         if not bucket_name:
             return jsonify({'error': 'GCS bucket not configured'}), 500
-        client = get_gcs_client()
+        
+        credentials, project_id = google.auth.default()
+        auth_request = google_requests.Request()
+        credentials.refresh(auth_request)
+
+        sa_email = "image-upload-service@wishtracker-484919.iam.gserviceaccount.com"
+        
+
+        bucket_name = os.getenv('GCS_BUCKET_NAME')
+        if not bucket_name:
+            return jsonify({'error': 'GCS bucket not configured'}), 500
+        
+        # use standard client for Cloud Run
+        client = storage.Client()
         bucket = client.bucket(bucket_name)
         blob = bucket.blob(gcs_path)
+
+        # "IAM SignBlob" method required for Cloud Run
         signed_url = blob.generate_signed_url(
             version='v4',
             expiration=timedelta(minutes=15),
             method='PUT',
-            content_type=content_type
+            content_type=content_type,
+            service_account_email=sa_email,
+            access_token=credentials.token 
         )
+
 
         return jsonify({
             'upload_url': signed_url,

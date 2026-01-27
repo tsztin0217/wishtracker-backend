@@ -21,7 +21,7 @@ Flask-Migrate==4.1.0
 Flask-SQLAlchemy==3.1.1
 frozenlist==1.8.0
 google-api-core==2.29.0
-google-auth==2.47.0
+google-auth==2.48.0
 google-cloud-core==2.5.0
 google-cloud-storage==3.8.0
 google-crc32c==1.8.0
