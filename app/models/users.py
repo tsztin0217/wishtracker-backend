@@ -10,6 +10,7 @@ class User(db.Model):
     email: Mapped[str]
     name: Mapped[str]
     items: Mapped[list['Item']] = relationship(back_populates='user')
+    owned_tags: Mapped[list['Tag']] = relationship(back_populates='user')
 
     @staticmethod
     def get_or_create(oauth_provider, oauth_id, email, name=None):
