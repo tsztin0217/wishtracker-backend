@@ -11,14 +11,32 @@ bp = Blueprint('item_bp', __name__, url_prefix='/items')
 @bp.post('')
 def create_item():
     request_data = request.get_json()
-    print("Received data:", request_data)
     user_id = session.get('user_id')
     if not user_id:
         return jsonify({'error': 'Authentication required'}), 401
 
+    # separate tags from the main item data
+    tag_data = request_data.pop('tags', [])
     request_data['user_id'] = user_id
 
-    return create_model(Item, request_data)
+    # create item first
+    new_item = Item.from_dict(request_data)
+    
+    # associate tags (many-to-nany)
+    for t in tag_data:
+        tag_name = t['name'] if isinstance(t, dict) else t
+        # check if this user already has a tag with this name
+        tag = Tag.query.filter_by(name=tag_name, user_id=user_id).first()
+        if not tag:
+            tag = Tag(name=tag_name, user_id=user_id)
+            db.session.add(tag)
+        
+        new_item.tags.append(tag)
+
+    db.session.add(new_item)
+    db.session.commit()
+    return jsonify(new_item.to_dict()), 201
+
 
 @bp.get('')
 def get_all_items():

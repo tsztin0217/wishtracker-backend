@@ -8,6 +8,7 @@ from .models import users, item, tag, item_tag
 from .routes.home_routes import bp as home_bp
 from .routes.image_routes import bp as images_bp
 from .routes.item_routes import bp as item_bp
+from .routes.tag_routes import bp as tag_bp
 from werkzeug.middleware.proxy_fix import ProxyFix
 from google.cloud.sql.connector import Connector, IPTypes
 
@@ -64,5 +65,6 @@ def create_app(config=None):
     app.register_blueprint(home_bp)
     app.register_blueprint(images_bp)
     app.register_blueprint(item_bp)
+    app.register_blueprint(tag_bp)
 
     return app
