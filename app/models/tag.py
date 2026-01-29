@@ -11,3 +11,9 @@ class Tag(db.Model):
     items: Mapped[list['Item']] = relationship(secondary='item_tag', back_populates='tags')
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
     user: Mapped['User'] = relationship(back_populates='owned_tags')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name
+        }
