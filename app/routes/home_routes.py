@@ -12,6 +12,7 @@ def get_homepage():
 
 @bp.get('/login')
 def login():
+    session.permanent = True
     redirect_uri = url_for('home_bp.authorize_google', _external=True)
     print(f"[DEBUG] Login redirect_uri: {redirect_uri}")
     print(f"[DEBUG] Session before OAuth: {dict(session)}")
@@ -37,12 +38,14 @@ def authorize_google():
         
         # Redirect back to frontend
         frontend_url = 'https://wishtracker-frontend-284687348047.us-central1.run.app'
+        # frontend_url = 'http://localhost:5173'
         print(f"[DEBUG] Redirecting to: {frontend_url}")
         return redirect(frontend_url)
     
     except Exception as e:
         print(f"OAuth error: {e}")
         frontend_url = 'https://wishtracker-frontend-284687348047.us-central1.run.app'
+        # frontend_url = 'http://localhost:5173'
         return redirect(f'{frontend_url}?error=auth_failed')
 
 @bp.get('/user')

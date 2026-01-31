@@ -53,7 +53,7 @@ def create_app(config=None):
     if is_production:
         app.config['SESSION_COOKIE_SECURE'] = True
         app.config['SESSION_COOKIE_HTTPONLY'] = True
-        app.config['SESSION_COOKIE_SAMESITE'] = 'None'
+        app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
     if config:
         app.config.update(config)
