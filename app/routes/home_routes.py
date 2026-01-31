@@ -1,4 +1,4 @@
-from flask import Blueprint, session, url_for, redirect, jsonify
+from flask import Blueprint, session, url_for, redirect, jsonify, request
 from ..auth import oauth
 from ..models.users import User
 from ..db import db
@@ -39,8 +39,9 @@ def authorize_google():
         # Redirect back to frontend
         frontend_url = 'https://wishtracker-frontend-284687348047.us-central1.run.app'
         # frontend_url = 'http://localhost:5173'
-        print(f"[DEBUG] Redirecting to: {frontend_url}")
-        return redirect(frontend_url)
+        target_url = f"{frontend_url}?user_id={user.id}"
+        print(f"[DEBUG] Redirecting to: {target_url}")
+        return redirect(target_url)
     
     except Exception as e:
         print(f"OAuth error: {e}")
@@ -52,7 +53,7 @@ def authorize_google():
 def get_current_user():
     print(f"[DEBUG] /user endpoint called")
     print(f"[DEBUG] Session in /user: {dict(session)}")
-    user_id = session.get('user_id')
+    user_id = session.get('user_id') or request.headers.get('X-User-ID')
     print(f"[DEBUG] user_id from session: {user_id}")
     if not user_id:
         return jsonify({'user': None}), 200

@@ -48,7 +48,10 @@ def create_app(config=None):
     # 3. Session & Security
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1, x_prefix=1)
     allowed_origins = os.getenv('CORS_ORIGINS', '*').split(',')
-    CORS(app, origins=allowed_origins, supports_credentials=True)
+    CORS(app,
+        origins=allowed_origins,
+        supports_credentials=True,
+        allow_headers=['Content-Type', 'Authorization', 'X-User-ID'])
     
     if is_production:
         app.config.update(
