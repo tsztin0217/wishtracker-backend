@@ -51,10 +51,11 @@ def create_app(config=None):
     CORS(app, origins=allowed_origins, supports_credentials=True)
     
     if is_production:
-        app.config['SESSION_COOKIE_SECURE'] = True
-        app.config['SESSION_COOKIE_HTTPONLY'] = True
-        app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-
+        app.config.update(
+            SESSION_COOKIE_SECURE=True,
+            SESSION_COOKIE_HTTPONLY=True,
+            SESSION_COOKIE_SAMESITE='None',
+        )
     if config:
         app.config.update(config)
 
