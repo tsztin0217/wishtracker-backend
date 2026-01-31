@@ -67,4 +67,6 @@ def create_app(config=None):
     app.register_blueprint(item_bp)
     app.register_blueprint(tag_bp)
 
+    print(f"DEBUG: Production Mode: {is_production}")
+    print(f"DEBUG: SameSite: {app.config.get('SESSION_COOKIE_SAMESITE')}")
     return app
