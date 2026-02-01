@@ -58,6 +58,7 @@ def create_app(config=None):
             SESSION_COOKIE_SECURE=True,
             SESSION_COOKIE_HTTPONLY=True,
             SESSION_COOKIE_SAMESITE='None',
+            SESSION_COOKIE_DOMAIN=None,   # allow cross-domain cookies
         )
     if config:
         app.config.update(config)
