@@ -33,6 +33,8 @@ def authorize_google():
         )
 
         session['user_id'] = user.id
+        session.permanent = True  # Ensures the cookie is sent with an expiry
+        session.modified = True # Force Flask to save the session
         print(f"[DEBUG] Set session['user_id'] = {user.id}")
         print(f"[DEBUG] Session after setting: {dict(session)}")
         
