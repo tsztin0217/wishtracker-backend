@@ -11,6 +11,7 @@ from .routes.item_routes import bp as item_bp
 from .routes.tag_routes import bp as tag_bp
 from werkzeug.middleware.proxy_fix import ProxyFix
 from google.cloud.sql.connector import Connector, IPTypes
+from datetime import timedelta
 
 load_dotenv()
 
@@ -59,6 +60,7 @@ def create_app(config=None):
             SESSION_COOKIE_HTTPONLY=True,
             SESSION_COOKIE_SAMESITE='None',
             SESSION_COOKIE_DOMAIN=None,   # allow cross-domain cookies
+            PERMANENT_SESSION_LIFETIME=timedelta(days=7),
         )
     if config:
         app.config.update(config)
