@@ -48,7 +48,10 @@ def create_app(config=None):
 
     # 3. Session & Security
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1, x_prefix=1)
-    allowed_origins = os.getenv('CORS_ORIGINS', '*').split(',')
+    allowed_origins = [
+    "https://wishtracker-frontend-284687348047.us-central1.run.app",
+    "http://localhost:5173"
+    ]
     CORS(app,
         origins=allowed_origins,
         supports_credentials=True,
@@ -61,6 +64,7 @@ def create_app(config=None):
             SESSION_COOKIE_SAMESITE='None',
             SESSION_COOKIE_DOMAIN=None,   # allow cross-domain cookies
             PERMANENT_SESSION_LIFETIME=timedelta(days=7),
+            expose_headers=['Set-Cookie']
         )
     if config:
         app.config.update(config)
