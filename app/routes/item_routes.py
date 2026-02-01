@@ -40,7 +40,7 @@ def create_item():
 
 @bp.get('')
 def get_all_items():
-    user_id = session.get('user_id')
+    user_id = session.get('user_id') or request.headers.get('X-User-ID')
     if not user_id:
         return jsonify({'error': 'Authentication required'}), 401
     items = Item.query.filter_by(user_id=user_id).all()
