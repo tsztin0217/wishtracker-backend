@@ -11,7 +11,7 @@ bp = Blueprint('item_bp', __name__, url_prefix='/items')
 @bp.post('')
 def create_item():
     request_data = request.get_json()
-    user_id = session.get('user_id')
+    user_id = session.get('user_id') or request.headers.get('X-User-ID')
     if not user_id:
         return jsonify({'error': 'Authentication required'}), 401
 
@@ -50,7 +50,7 @@ def get_all_items():
 @bp.delete('/<int:item_id>')
 def delete_item(item_id):
     """Delete an item and its associated image from GCS."""
-    user_id = session.get('user_id')
+    user_id = session.get('user_id') or request.headers.get('X-User-ID')
     if not user_id:
         return jsonify({'error': 'Authentication required'}), 401
     item = Item.query.filter_by(id=item_id, user_id=user_id).first()
