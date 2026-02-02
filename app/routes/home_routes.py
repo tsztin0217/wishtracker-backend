@@ -55,7 +55,8 @@ def authorize_google():
 def get_current_user():
     print(f"[DEBUG] /user endpoint called")
     print(f"[DEBUG] Session in /user: {dict(session)}")
-    user_id = session.get('user_id') or request.headers.get('X-User-ID')
+    user_id_raw = session.get('user_id') or request.headers.get('X-User-ID')
+    user_id = int(user_id_raw) if user_id_raw else None
     print(f"[DEBUG] user_id from session: {user_id}")
     if not user_id:
         return jsonify({'user': None}), 200

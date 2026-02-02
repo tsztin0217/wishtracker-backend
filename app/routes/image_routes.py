@@ -22,7 +22,8 @@ def get_gcs_client():
 @cross_origin(origins=os.getenv('CORS_ORIGINS', '*').split(','), supports_credentials=True)
 def get_upload_url():
     """Generate a signed URL for direct upload to GCS"""
-    user_id = session.get('user_id')
+    raw_user_id = session.get('user_id') or request.headers.get('X-User-ID')
+    user_id = int(raw_user_id) if raw_user_id else None
     if not user_id:
         return jsonify({'error': 'Authentication required'}), 401
 

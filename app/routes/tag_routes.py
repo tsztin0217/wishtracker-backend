@@ -9,7 +9,8 @@ bp = Blueprint('tag_bp', __name__, url_prefix='/tags')
 @bp.post('')
 def create_tag():
     request_data = request.get_json()
-    user_id = session.get('user_id') or request.headers.get('X-User-ID')
+    raw_user_id = session.get('user_id') or request.headers.get('X-User-ID')
+    user_id = int(raw_user_id) if raw_user_id else None
     if not user_id:
         return jsonify({'error': 'Authentication required'}), 401
 
@@ -19,7 +20,8 @@ def create_tag():
 
 @bp.get('')
 def get_all_tags():
-    user_id = session.get('user_id') or request.headers.get('X-User-ID')
+    raw_user_id = session.get('user_id') or request.headers.get('X-User-ID')
+    user_id = int(raw_user_id) if raw_user_id else None
     if not user_id:
         return jsonify({'error': 'Authentication required'}), 401
     tags = Tag.query.filter_by(user_id=user_id).all()
@@ -29,7 +31,8 @@ def get_all_tags():
 
 @bp.delete('/<int:tag_id>')
 def delete_tag(tag_id):
-    user_id = session.get('user_id') or request.headers.get('X-User-ID')
+    raw_user_id = session.get('user_id') or request.headers.get('X-User-ID')
+    user_id = int(raw_user_id) if raw_user_id else None
     tag = Tag.query.filter_by(id=tag_id, user_id=user_id).first()
     
     if not tag:
