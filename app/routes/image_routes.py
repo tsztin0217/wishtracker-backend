@@ -19,7 +19,11 @@ def get_gcs_client():
 
 
 @bp.route('/upload-url', methods=['POST', 'OPTIONS'])
-@cross_origin(origins=os.getenv('CORS_ORIGINS', '*').split(','), supports_credentials=True)
+@cross_origin(
+    origins=os.getenv('CORS_ORIGINS', '*').split(','), 
+    supports_credentials=True,
+    allow_headers=['Content-Type', 'X-User-ID']
+)
 def get_upload_url():
     """Generate a signed URL for direct upload to GCS"""
     raw_user_id = session.get('user_id') or request.headers.get('X-User-ID')
