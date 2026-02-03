@@ -25,11 +25,11 @@ class Item(db.Model):
     def from_dict(cls, item_dict):
         return cls(
             name=item_dict['name'],
-            description=item_dict.get('description'),
-            price=item_dict['price'],
-            img_url=item_dict['img_url'],
-            gcs_path=item_dict.get('gcs_path'),
-            website_url=item_dict['website_url'],
+            description=item_dict.get('description', ''),
+            price=item_dict.get('price', 0),
+            img_url=item_dict.get('img_url', ''),
+            gcs_path=item_dict.get('gcs_path', ''),
+            website_url=item_dict.get('website_url', ''),
             user_id=item_dict['user_id']
         )
     
