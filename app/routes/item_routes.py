@@ -45,7 +45,7 @@ def get_all_items():
     user_id = int(raw_user_id) if raw_user_id else None
     if not user_id:
         return jsonify({'error': 'Authentication required'}), 401
-    items = Item.query.filter_by(user_id=user_id).all()
+    items = Item.query.filter_by(user_id=user_id).order_by(Item.created_at.asc()).all()
     items_dict = [item.to_dict() for item in items]
     return make_response({'items': items_dict}, 200)
 
@@ -96,6 +96,10 @@ def update_item(item_id):
     item.name = request_data.get('name', item.name)
     item.description = request_data.get('description', item.description)
     item.price = request_data.get('price', item.price)
+    
+    # update timestamp for last_updated
+    from datetime import datetime, timezone
+    item.last_updated = datetime.now(timezone.utc)
 
     # update tags if provided
     if tag_data is not None:

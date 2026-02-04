@@ -9,6 +9,7 @@ from .routes.home_routes import bp as home_bp
 from .routes.image_routes import bp as images_bp
 from .routes.item_routes import bp as item_bp
 from .routes.tag_routes import bp as tag_bp
+from .routes.linkpreview_routes import bp as linkpreview_bp
 from werkzeug.middleware.proxy_fix import ProxyFix
 from google.cloud.sql.connector import Connector, IPTypes
 from datetime import timedelta
@@ -55,7 +56,9 @@ def create_app(config=None):
     CORS(app,
         origins=allowed_origins,
         supports_credentials=True,
-        allow_headers=['Content-Type', 'Authorization', 'X-User-ID'])
+        allow_headers=['Content-Type', 'Authorization', 'X-User-ID'],
+        expose_headers=['Set-Cookie'],
+        methods=['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'])
     
     if is_production:
         app.config.update(
@@ -63,8 +66,7 @@ def create_app(config=None):
             SESSION_COOKIE_HTTPONLY=True,
             SESSION_COOKIE_SAMESITE='None',
             SESSION_COOKIE_DOMAIN=None,   # allow cross-domain cookies
-            PERMANENT_SESSION_LIFETIME=timedelta(days=7),
-            expose_headers=['Set-Cookie']
+            PERMANENT_SESSION_LIFETIME=timedelta(days=7)
         )
     if config:
         app.config.update(config)
@@ -77,6 +79,7 @@ def create_app(config=None):
     app.register_blueprint(images_bp)
     app.register_blueprint(item_bp)
     app.register_blueprint(tag_bp)
+    app.register_blueprint(linkpreview_bp)
 
     print(f"DEBUG: Production Mode: {is_production}")
     print(f"DEBUG: SameSite: {app.config.get('SESSION_COOKIE_SAMESITE')}")
