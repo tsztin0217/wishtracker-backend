@@ -7,6 +7,9 @@ bp = Blueprint('linkpreview_bp', __name__, url_prefix='/linkpreview')
 @bp.route('/fetch', methods=['POST', 'OPTIONS'])
 def fetch_link_preview():
     """fetch metadata from url using LinkPreview API"""
+    if request.method == 'OPTIONS':
+        return '', 200
+    
     request_data = request.get_json()
     url = request_data.get('url')
     
