@@ -10,7 +10,7 @@ class Item(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str]
     description: Mapped[Optional[str]]
-    price: Mapped[float]
+    price: Mapped[Optional[float]]
     img_url: Mapped[str]
     gcs_path: Mapped[str]
     website_url: Mapped[str]

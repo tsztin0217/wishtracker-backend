@@ -1,10 +1,12 @@
 from flask import Blueprint, request, jsonify
+from flask_cors import cross_origin
 import requests
 import os
 
 bp = Blueprint('linkpreview_bp', __name__, url_prefix='/linkpreview')
 
 @bp.route('/fetch', methods=['POST', 'OPTIONS'])
+@cross_origin(supports_credentials=True)
 def fetch_link_preview():
     """fetch metadata from url using LinkPreview API"""
     if request.method == 'OPTIONS':
@@ -23,11 +25,22 @@ def fetch_link_preview():
     try:
         response = requests.post(
             'https://api.linkpreview.net',
-            headers={'X-Linkpreview-Api-Key': api_key},
+            headers={'X-Linkpreview-Api-Key': api_key,
+                    'Cache-Control': 'no-cache'},
             json={'q': url},
             timeout=10
         )
         
+        if response.status_code == 425:
+            import time
+            time.sleep(1) # Brief cooldown
+            response = requests.post(
+                'https://api.linkpreview.net',
+                headers={'X-Linkpreview-Api-Key': api_key},
+                json={'q': url},
+                timeout=10
+            )
+            
         if response.status_code != 200:
             return jsonify({'error': f'LinkPreview API error: {response.status_code}'}), response.status_code
         
