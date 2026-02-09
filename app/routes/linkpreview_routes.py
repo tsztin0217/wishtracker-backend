@@ -40,6 +40,10 @@ def fetch_link_preview():
                 json={'q': url},
                 timeout=10
             )
+        
+        # Handle rate limiting
+        if response.status_code == 423:
+            return jsonify({'error': 'Rate limit exceeded. Please wait a moment and try again.'}), 429
             
         if response.status_code != 200:
             return jsonify({'error': f'LinkPreview API error: {response.status_code}'}), response.status_code

@@ -6,6 +6,7 @@ from app.db import db
 from .route_utilities import create_model
 from google.cloud import storage
 import os
+from datetime import datetime, timezone
 bp = Blueprint('item_bp', __name__, url_prefix='/items')
 
 @bp.post('')
@@ -89,16 +90,38 @@ def update_item(item_id):
     item = Item.query.filter_by(id=item_id, user_id=user_id).first()
     if not item:
         return jsonify({'error': 'Item not found'}), 404
-    
+
+    old_gcs_path = item.gcs_path
+
     request_data = request.get_json()
     tag_data = request_data.pop('tags', None)
     
     item.name = request_data.get('name', item.name)
     item.description = request_data.get('description', item.description)
     item.price = request_data.get('price', item.price)
+    item.website_url = request_data.get('website_url', item.website_url)
+
+    # Handle image fields
+    new_img_url = request_data.get('img_url', item.img_url)
+    new_gcs_path = request_data.get('gcs_path', item.gcs_path)
+
+    # If gcs_path changed (including being cleared), delete the old blob from GCS
+    bucket_name = os.getenv('GCS_BUCKET_NAME')
+    if old_gcs_path and old_gcs_path != new_gcs_path and bucket_name:
+        try:
+            client = storage.Client()
+            bucket = client.bucket(bucket_name)
+            blob = bucket.blob(old_gcs_path)
+            if blob.exists():
+                blob.delete()
+        except Exception as e:
+            print(f"[ERROR] Failed to delete previous image from GCS on update: {e}")
+
+    item.img_url = new_img_url
+    item.gcs_path = new_gcs_path
     
     # update timestamp for last_updated
-    from datetime import datetime, timezone
+    
     item.last_updated = datetime.now(timezone.utc)
 
     # update tags if provided

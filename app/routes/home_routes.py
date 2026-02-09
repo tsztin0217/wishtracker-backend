@@ -16,7 +16,8 @@ def login():
     redirect_uri = url_for('home_bp.authorize_google', _external=True)
     print(f"[DEBUG] Login redirect_uri: {redirect_uri}")
     print(f"[DEBUG] Session before OAuth: {dict(session)}")
-    return oauth.google.authorize_redirect(redirect_uri)
+    # Force Google to always show the account chooser when logging in
+    return oauth.google.authorize_redirect(redirect_uri, prompt='select_account')
 
 @bp.get('/authorize_google')
 def authorize_google():
